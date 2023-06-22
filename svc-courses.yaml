@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: msvc-courses
+spec:
+  ports:
+  - port: 8002
+    protocol: TCP
+    targetPort: 8002
+  selector:
+    app: msvc-courses
+  type: LoadBalancer
+#kubectl port-forward service/msvc-courses 8002:8002

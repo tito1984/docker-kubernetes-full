@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msvc-gateway
+  labels:
+    run: msvc-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msvc-gateway
+  template:
+    metadata:
+      labels:
+        app: msvc-gateway
+    spec:
+      containers:
+        - image: titotxema/gateway:latest
+          name: courses
+          ports:
+            - containerPort: 8090
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: msvc-gateway
+spec:
+  ports:
+    - port: 8090
+      protocol: TCP
+      targetPort: 8090
+  selector:
+    app: msvc-gateway
+  type: LoadBalancer
+    #kubectl port-forward service/msvc-gateway 8090:8090

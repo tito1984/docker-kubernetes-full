@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: msvc-users
+data:
+  lb_auth_issuer_uri: http://host.docker.internal:9000
+  lb_users_uri: http://host.docker.internal:8001
+  port: "8001"
+  db_host: mysql8:3306
+  database: msvc_users
+#  username: root
+#  password: sasa
+  courses_url: msvc-courses:8002
+  application.yaml: |-
+    config:
+      text: Config environment by default
+    ---
+    spring:
+      config:
+        activate:
+          on-profile: dev
+    config:
+      text: Config environment of development
+    ---
+    spring:
+      config:
+        activate:
+          on-profile: prod
+    config:
+      text: Config environment of production
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: msvc-courses
+data:
+  port: "8002"
+  db_host: postgres15:5432
+  database: msvc_courses
+#  username: postgres
+#  password: sasa
+  users_url: msvc-users:8001

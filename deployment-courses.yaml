@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msvc-courses
+  labels:
+    run: msvc-courses
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msvc-courses
+  template:
+    metadata:
+      labels:
+        app: msvc-courses
+    spec:
+      containers:
+        - image: titotxema/courses:latest
+          name: courses
+          ports:
+            - containerPort: 8002
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-courses
+                  key: port
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-courses
+                  key: db_host
+            - name: DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-courses
+                  key: database
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: msvc-courses
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: msvc-courses
+                  key: password
+            - name: USERS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-courses
+                  key: users_url

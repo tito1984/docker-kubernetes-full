@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msvc-oauth
+  labels:
+    run: msvc-oauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msvc-oauth
+  template:
+    metadata:
+      labels:
+        app: msvc-oauth
+    spec:
+      containers:
+        - image: titotxema/oauth:latest
+          name: oauth
+          ports:
+            - containerPort: 9000
+          env:
+            - name: LB_USERS_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-users
+                  key: lb_users_uri
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: msvc-oauth
+spec:
+  ports:
+    - port: 9000
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app: msvc-oauth
+  type: LoadBalancer
+    #kubectl port-forward service/msvc-oauth 9000:9000
